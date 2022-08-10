@@ -10,6 +10,7 @@ import {
   getVault,
   getCommit,
   getClientToken,
+  getUserIDToken,
   getPartnerAttributionID,
   getMerchantID,
   getClientAccessToken,
@@ -312,6 +313,31 @@ describe(`script cases`, () => {
       throw new Error(
         `Expected client access token to be ${clientAccessToken}, got ${
           getClientAccessToken() || "undefined"
+        } from ${url}`
+      );
+    }
+  });
+
+  it("should pull id-token out of a clientToken", () => {
+    const idToken = "abc12354321";
+    const clientToken = base64encode(
+      JSON.stringify({
+        paypal: {
+          idToken,
+        },
+      })
+    );
+
+    const url = insertMockSDKScript({
+      attributes: {
+        "data-client-token": clientToken,
+      },
+    });
+
+    if (idToken !== getUserIDToken()) {
+      throw new Error(
+        `Expected id token to be ${idToken}, got ${
+          getUserIDToken() || "undefined"
         } from ${url}`
       );
     }

@@ -244,7 +244,15 @@ export function getAmount(): ?string {
 }
 
 export function getUserIDToken(): ?string {
-  return getSDKAttribute(SDK_SETTINGS.USER_ID_TOKEN);
+  const idToken = getSDKAttribute(SDK_SETTINGS.USER_ID_TOKEN);
+  if (idToken) {
+    return idToken;
+  }
+  const clientToken = getClientToken();
+  if (clientToken) {
+    const token = JSON.parse(base64decode(clientToken)).paypal.idToken;
+    return token;
+  }
 }
 
 export function getClientAccessToken(): ?string {
